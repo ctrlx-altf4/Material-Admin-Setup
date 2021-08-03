@@ -1,24 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { Suspense } from "react";
+import { Redirect, Route, Switch } from "react-router-dom";
+
+import Loader from "components/Loader";
+import Navbar from "components/Navbar";
+
+import routes from "routes";
+import Container from "@material-ui/core/Container";
+import Box from "@material-ui/core/Box";
+import Breadcrumb from "components/Breadcrumb";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Suspense fallback={<Loader />}>
+      <Navbar />
+      <Container size="lg">
+        <Box my={4}>
+          <Breadcrumb />
+          <Box mt={2}>
+            <Switch>
+              {routes.map((e) => {
+                if (!e.component) return null;
+                return (
+                  <Route
+                    key={e.path}
+                    exact
+                    path={e.path}
+                    component={e.component}
+                  />
+                );
+              })}
+              <Redirect to="/" />
+            </Switch>
+          </Box>
+        </Box>
+      </Container>
+    </Suspense>
   );
 }
 
